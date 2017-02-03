@@ -18,28 +18,32 @@ int Ray::cross(OBJ* obj, pointer_t* p){
 		double A = SQ(direction.getScalar());
 		double B = (start_v - obj.center) * direction;
 		double C = SQ((obj.center - start_v).getScalar()) - obj.radius;
+		double t1,t2;
 		if((SQ(B) - A * C) > 0){
-			double t1 = (-B + sqrt(SQ(B)-AC))/A;
-			double t2 = (-B - sqrt(SQ(B)-AC))/A;
-			if(t1>t2){
+			t1 = (-B + sqrt(SQ(B)-AC))/A;
+			t2 = (-B - sqrt(SQ(B)-AC))/A;
+			if(t1<t2){
 				p->x = start_v.x + t1*direction.x;
 				p->y = start_v.y + t1*direction.y;
 				p->z = start_v.z + t1*direction.z;
 				break;
 			}else{
-				p->x = start_v.x + t1*direction.x;
-				p->y = start_v.y + t1*direction.y;
-				p->z = start_v.z + t1*direction.z;
+				p->x = start_v.x + t2*direction.x;
+				p->y = start_v.y + t2*direction.y;
+				p->z = start_v.z + t2*direction.z;
 				break;
 			}
 		}else if((SQ(B) - A * C) == 0){
-			double t = -B / A;
-		}else{
-			return -1;
-		}
+			t1 = -B / A;
+			p->x = start_v.x + t1*direction.x;
+			p->y = start_v.y + t1*direction.y;
+			p->z = start_v.z + t1*direction.z;
+		}else return -1;
 		break;
+	default:
+		return -2;
 	}
-	return p;
+	return 0;
 }
 
 Ray::Ray(int x, int y, int z, Vector p){
@@ -48,25 +52,21 @@ Ray::Ray(int x, int y, int z, Vector p){
 	start.z = z;
 	direction = p;
 	pram = 0;
-	flag = 1;
 }
 
 Ray::Ray(int scalar, int xyangle, int xzangle, pointer_t s){
 	start = s;
 	Vector direction(scalar, xyangle, xzangle);
 	pram = 0;
-	flag = 1;
 }
 
 Ray::Ray(pointer_t s, Vector d){
 	start = s;
 	direction = d;
 	pram = 0;
-	flag = 1;
 }
 
 Ray::Ray(){
-	flag = 0;
 	start.x = 0;
 	start.y = 0;
 	start.z = 0;
@@ -82,29 +82,17 @@ Ray::Ray(const Ray &obj){
 }
 
 void Ray::Set(int x, int y, int z, Vector direction){
-	if(flag == 0){
-		start.x = x;
-		start.y = y;
-		start.z = z;
-		direction = p;
-		flag = 1;
-	}else{
-		std::cout << "Setの不正利用" << std::endl;
-		exit(EXIT_FAILURE);
-	}
+	start.x = x;
+	start.y = y;
+	start.z = z;
+	direction = p;
 	return;
 }
 
 void Ray::Set(int scalar, int xyangle, int xzangle, pointer_t s){
-	if(flag == 0){
 	start = s;
 	Vector direction(scalar, xyangle, xzangle);
 	pram = 0;
-	flag = 1;
-	}else{
-		std::cout << "Setの不正利用" std:endl;
-		exit(EXIT_FAILURE);
-	}
 }
 
 int Ray::pass(pointer_t p){

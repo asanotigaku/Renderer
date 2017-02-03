@@ -13,10 +13,9 @@ class Ray{
 		Vector start_v;
 		Vector direction; 
 		int pram;
-		bool flag;//初期化されているかのフラグ
 	public:
 		int type;
-		int cross(OBJ* obj, pointer_t* p);
+		int cross(OBJ* obj, pointer_t* p);//交差判定
 		int pass(pointer_t);//通過判定
 		Ray();
 		Ray(int, int, int, Vector);
